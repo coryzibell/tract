@@ -221,7 +221,7 @@ zerotrie = "0.2.1"
 tract-api = { version = "0.22.1-pre", path = 'api' }
 tract-core = { version = "0.22.1-pre", path = 'core' }
 tract-cuda = { version = "0.22.1-pre", path = 'cuda' }
-tract-data = { version = "0.22.1-pre", path = 'data' }
+tract-data = { version = "0.22.1", path = 'data' }
 tract-extra = { version = "0.22.1-pre", path = 'extra' }
 tract-gpu = { version = "0.22.1-pre", path = 'gpu' }
 tract-hir = { version = "0.22.1-pre", path = 'hir' }
