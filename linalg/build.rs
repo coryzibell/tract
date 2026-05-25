@@ -17,6 +17,24 @@ fn use_masm() -> bool {
     env::var("CARGO_CFG_TARGET_ENV") == Ok("msvc".to_string()) && var("HOST").contains("-windows-")
 }
 
+/// True when targeting aarch64-pc-windows-msvc.  On this triple the `cc`
+/// crate selects `cl.exe`, which silently ignores `.S` files (warning
+/// D9024/D9027, exit code 0) and produces no `.o` — causing LNK1181 at
+/// archive time.  We override the compiler to `clang` whose integrated
+/// assembler handles GAS-syntax ARM64 assembly natively on Windows.
+fn is_aarch64_msvc() -> bool {
+    env::var("CARGO_CFG_TARGET_ARCH").as_deref() == Ok("aarch64")
+        && env::var("CARGO_CFG_TARGET_OS").as_deref() == Ok("windows")
+        && env::var("CARGO_CFG_TARGET_ENV").as_deref() == Ok("msvc")
+}
+
+/// Apply the clang override to a `cc::Build` when targeting aarch64-msvc.
+fn apply_aarch64_msvc_clang(build: &mut cc::Build) {
+    if is_aarch64_msvc() {
+        build.compiler("clang");
+    }
+}
+
 fn include_amx() -> bool {
     let arch = var("CARGO_CFG_TARGET_ARCH");
     let os = var("CARGO_CFG_TARGET_OS");
@@ -59,6 +77,7 @@ impl ConfigForHalf {
 
     fn cc(&self) -> cc::Build {
         let mut cc = cc::Build::new();
+        apply_aarch64_msvc_clang(&mut cc);
         for flag in &self.extra_flags {
             cc.flag(flag);
         }
@@ -171,7 +190,10 @@ fn main() {
                 &suffix,
                 false,
             );
-            cc::Build::new().files(files).static_flag(true).compile("arm64simd");
+            let mut build = cc::Build::new();
+            build.files(files);
+            apply_aarch64_msvc_clang(&mut build);
+            build.static_flag(true).compile("arm64simd");
             if include_amx() {
                 let files = preprocess_files("arm64/apple_amx", &[], &suffix, false);
                 cc::Build::new().files(files).static_flag(true).compile("appleamx");
