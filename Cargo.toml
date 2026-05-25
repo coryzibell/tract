@@ -226,7 +226,7 @@ tract-extra = { version = "0.22.1-pre", path = 'extra' }
 tract-gpu = { version = "0.22.1-pre", path = 'gpu' }
 tract-hir = { version = "0.22.1-pre", path = 'hir' }
 tract-libcli = { version = "0.22.1-pre", path = 'libcli' }
-tract-linalg = { version = "0.22.1-pre", path = 'linalg' }
+tract-linalg = { version = "0.22.1", path = 'linalg' }
 tract-metal = { version = "0.22.1-pre", path = 'metal' }
 tract-nnef-resources = { version = "0.22.1-pre", path = 'nnef/nnef-resources' }
 tract-nnef = { version = "0.22.1-pre", path = 'nnef' }
