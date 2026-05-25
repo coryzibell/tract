@@ -14,7 +14,9 @@ fn var(k: &str) -> String {
 }
 
 fn use_masm() -> bool {
-    env::var("CARGO_CFG_TARGET_ENV") == Ok("msvc".to_string()) && var("HOST").contains("-windows-")
+    env::var("CARGO_CFG_TARGET_ENV") == Ok("msvc".to_string())
+        && var("HOST").contains("-windows-")
+        && !is_aarch64_msvc()
 }
 
 /// True when targeting aarch64-pc-windows-msvc.  On this triple the `cc`
